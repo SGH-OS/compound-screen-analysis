@@ -24,7 +24,7 @@ The workflow implemented in `drug_screen_analysis.Rmd` includes:
 5. Generating plots corresponding to **Figure 2b (HOS)** and **Figure 2c (MG63)**.
 
 ## How to run (typical)
-1. Open `drug_screen_analysis.Rmd` in RStudio.
+1. Open `drug_screen_analysis.R` in RStudio.
 2. Adjust the input path to `data/Supplementary_Table_2.xlsx` if needed.
 3. Knit the document or run chunks interactively.
 
