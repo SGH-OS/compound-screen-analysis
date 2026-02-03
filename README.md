@@ -5,7 +5,7 @@ This folder contains the analysis materials used for the small-molecule drug scr
 **“RB1 Deficiency in Osteosarcoma Confers Vulnerability to Targeting VCP through Competing Glutamine-mediated VCP Acetylation”**
 
 ## Contents
-- `drug_screen_analysis.Rmd`  
+- `drug_screen_analysis.R`  
   R Markdown script used for data processing, RB1-selective sensitivity calculation, and figure generation.
 
 - `data/Supplementary_Table_2.xlsx`  
