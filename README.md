@@ -8,14 +8,14 @@ This folder contains the analysis materials used for the small-molecule drug scr
 - `drug_screen_analysis.R`  
   R Markdown script used for data processing, RB1-selective sensitivity calculation, and figure generation.
 
-- `data/Supplementary_Table_2.xlsx`  
+- `data/Supplementary_Table_2.xlsx and Supplementary_Table_3.xlsx`  
   Source data for the compound screen (raw and/or normalized viability values depending on the sheet).
 
 - `figures/Figure2_drug_screen.png`  
   Reference image of Figure 2 panels related to the drug screen.
 
 ## Analysis summary
-The workflow implemented in `drug_screen_analysis.Rmd` includes:
+The workflow implemented in `drug_screen_analysis.R` includes:
 1. Importing the drug screen table.
 2. Normalization to plate-wise DMSO controls (as applicable based on the input sheet).
 3. Calculation of RB1-selective drug sensitivity using:
@@ -25,7 +25,7 @@ The workflow implemented in `drug_screen_analysis.Rmd` includes:
 
 ## How to run (typical)
 1. Open `drug_screen_analysis.R` in RStudio.
-2. Adjust the input path to `data/Supplementary_Table_2.xlsx` if needed.
+2. Adjust the input path to `data/Supplementary_Table_2.xlsx and Supplementary_Table_3.xlsx` if needed.
 3. Knit the document or run chunks interactively.
 
 > Note: The script reflects the workflow used during the study. Minor adjustments (e.g., file paths or package versions) may be required when running in a new environment.
