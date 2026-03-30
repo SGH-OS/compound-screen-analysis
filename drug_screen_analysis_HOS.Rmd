@@ -1,0 +1,162 @@
+---
+title: "drug_screen_analysis"
+output: html_document
+date: "2026-03-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+expr <- read.csv("compound screen(HOS).csv",header = T) #need to change the .xlsx file to .csv file
+
+##筛选重复值并去除重复值
+library(dplyr)
+expr <- expr %>%
+    group_by(Compound_Name) %>%
+    summarise_all(mean)
+
+
+library(ggplot2)
+attach(expr)
+ggplot(expr,aes(x =log2_shRB1_1_mean,y=log2_shNC_mean))+geom_point()
+
+#install.packages("LSD") # Download package LSD
+library(ggplot2)
+library(viridis)
+library(viridisLite)
+library(ggpointdensity)
+library(ggpubr)
+```
+
+
+```{r}
+my_palette <- c("#55C667FF","#73D055FF","#FDE725FF")
+p1<-ggplot(data =expr , mapping = aes(x = log2_shRB1_1_mean,
+                                        y =log2_shNC_mean))+ 
+ # geom_abline(slope = 1,col="black")+
+  geom_point(size=0.05,shape=16)+
+  geom_pointdensity()+
+
+ #密度散点图（geom_pointdensity）
+#  scale_color_viridis() + 
+  #geom_smooth(method = lm) +  ##省略拟合曲线
+  stat_cor(method = "spearman") + 
+ scale_color_viridis()+
+ theme_bw() + 
+  #coord_cartesian(xlim=c(0,15),ylim=c(0,15))+
+  xlab("Log2(cv[shRB1])") + 
+  theme(axis.title.x = element_text(size = 16,
+                                    face = "bold", 
+                                    vjust = 0.5, 
+                                    hjust = 0.5))+
+  ylab("Log2(cv[shNC])") + 
+  theme(axis.title.y = element_text(size = 16,
+                                    face = "bold", 
+                                    vjust = 0.5, 
+                                    hjust = 0.5))+
+  labs(title = "Correlation Plot \n n=2097")+
+  theme_bw()+
+  scale_x_continuous(limits = c(-6.22, 2)) + # 设置x轴范围为0到10  
+  scale_y_continuous(limits = c(-6, 2)) +  # 设置y轴范围为-5到5
+  coord_fixed() + # 保持x轴和y轴的比例，但允许它们根据数据范围缩放
+
+
+  theme(legend.position = "right",plot.title = element_text(size = 16,hjust = 0.5),
+    panel.grid.major=element_line(colour=NA),
+        panel.background = element_rect(fill = "transparent",colour = NA),
+        plot.background = element_rect(fill = "transparent",colour = NA),
+        panel.grid.minor = element_blank(),
+        text=element_text(size=16))
+ # theme(legend.position='none')) ##去除legend
+#p <- p + geom_point(aes(col = cyl))
+
+ggsave(file = "scatter plot(HOS).pdf",height = 5,width = 6)
+```
+
+
+```{r}
+cor <- read.csv("compound screen(HOS).csv",header = T)
+library(dplyr)
+cor <- cor %>%
+    group_by(Compound_Name) %>%
+    summarise_all(mean)
+
+cor <- cor[order(cor$log2_shRB1_1_mean_shNC_mean, decreasing=TRUE), ]
+
+#write.csv(cor , file = "HOS shRB1 NC.csv")
+
+cor$name <- rownames(cor)
+
+cor[,1] = cor[,3]
+cor <- cor[,-3]
+
+expr <- cor
+
+my_palette <- c("#55C667FF","#73D055FF","#FDE725FF")
+
+p<-ggplot(data =expr , mapping = aes(x = as.numeric(rownames(cor)),
+                                        y = log2_shRB1_1_mean_shNC_mean))+ 
+ # geom_abline(slope = 1,col="black")+
+  geom_point(size=1.5,shape=16)+
+  geom_pointdensity() + #密度散点图（geom_pointdensity）
+  # 添加一条水平线
+  geom_hline(aes(yintercept=0.004))+
+#  scale_color_viridis() + 
+  #geom_smooth(method = lm) +  ##省略拟合曲线
+  stat_cor(method = "spearman") + 
+ scale_color_viridis()+
+  #coord_cartesian(xlim=c(0,15),ylim=c(0,15))+
+  xlab("Drug/compound names") + 
+  theme(axis.title.x = element_text(size = 16,
+                                    face = "bold", 
+                                    vjust = 0.5, 
+                                    hjust = 0.5))+
+  ylab("-Log2(cv[shRB1]/cv[shNC])") + 
+  theme(axis.title.y = element_text(size = 16,
+                                    face = "bold", 
+                                    vjust = 0.5, 
+                                    hjust = 0.5))+
+  labs(title = "Correlation Plot \n n=2097")+
+  theme_bw()+
+  ylim(-4, 4)+
+  #coord_fixed() + # 保持x轴和y轴的比例，但允许它们根据数据范围缩放
+  theme(legend.position = "right",plot.title = element_text(size = 16,hjust = 0.5),
+    panel.grid.major=element_line(colour=NA),
+        panel.background = element_rect(fill = "transparent",colour = NA),
+        plot.background = element_rect(fill = "transparent",colour = NA),
+        panel.grid.minor = element_blank(),
+        text=element_text(size=16))
+
+ # theme(legend.position='none')) ##去除legend
+
+ggsave(file = "ranked scatter plot(HOS).pdf",height = 5,width = 6)
+
+
+
+
+
+
+
+```
+
